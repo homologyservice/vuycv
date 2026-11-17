@@ -3,7 +3,7 @@ services:
     name: digitalshopmm-bot
     env: node
     plan: free
-    buildCommand: npm install --no-audit --no-fund
+    buildCommand: npm install --no-audit --no-fund && pip3 install telethon
     startCommand: node bot.js
     envVars:
       - key: BOT_TOKEN
@@ -15,4 +15,8 @@ services:
       - key: SUPPORT_USERNAME
         sync: false
       - key: CHANNEL_LINK
+        sync: false
+      - key: API_ID
+        sync: false
+      - key: API_HASH
         sync: false

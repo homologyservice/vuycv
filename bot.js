@@ -87,9 +87,35 @@ const EMOTE = {
   OUT_OF_STOCK_2: '6260460969076465267', // ➡️
   OUT_OF_STOCK_3: '6257789602497572109', // ⬅️
   COMMENT_QTY: '6115968287735026787',    // 🥰
+  DONE_COMMENT: '6257974552379270658',   // 📱
   DONE_ICON: '6257974552379270658',      // 📱
   POST_LINK_ICON: '6260487164082005216', // 📢
 };
+
+// ---------- RANDOM PREMIUM EMOTE POOL ----------
+// အပေါ်က EMOTE ထဲက အလုပ်လုပ်ပြီးသား ID တွေကို random ရွေးသုံးဖို့ pool ပါ။
+// ID အသစ်ထပ်ထည့်ချင်ရင် ဒီ array ထဲ { id, ch } ထည့်လိုက်ပါ။
+const EMOTE_POOL = [
+  { id: '6260170796790980056', ch: '🍬' },
+  { id: '5328098344495490329', ch: '💳' },
+  { id: '5258011929993026890', ch: '📦' },
+  { id: '5404359483155570991', ch: '👛' },
+  { id: '6113870986484913105', ch: '👋' },
+  { id: '5359664288241829619', ch: '🎁' },
+  { id: '5864114012542736772', ch: '🔥' },
+  { id: '6114069998089539705', ch: '✅' },
+  { id: '5226791576495216962', ch: '🤩' },
+  { id: '6115968287735026787', ch: '🥰' },
+  { id: '5253527915416539991', ch: '🤟' },
+  { id: '5201691993775818138', ch: '🛫' },
+  { id: '5386757680679377085', ch: '🤑' },
+  { id: '5222040745665379997', ch: '💚' },
+];
+const randEmote = () => EMOTE_POOL[Math.floor(Math.random() * EMOTE_POOL.length)];
+// Button icon (icon_custom_emoji_id) အတွက် random ID
+const randIcon = () => randEmote().id;
+// Message text (HTML) ထဲထည့်ဖို့ random <tg-emoji>
+const randTg = () => { const e = randEmote(); return `<tg-emoji emoji-id="${e.id}">${e.ch}</tg-emoji>`; };
 
 // ---- Products / Countries data (placeholder - DB ချိတ်ပြီးမှ dynamic လုပ်နိုင်) ----
 const SERVICES = {
@@ -413,8 +439,8 @@ function serviceSelectKeyboard() {
 function commentCategoryKeyboard() {
   return {
     inline_keyboard: [
-      [{ text: COMMENT_CATEGORIES.boy.label, callback_data: 'cmcat:boy' }],
-      [{ text: COMMENT_CATEGORIES.girl.label, callback_data: 'cmcat:girl' }],
+      [{ text: COMMENT_CATEGORIES.boy.label, callback_data: 'cmcat:boy', icon_custom_emoji_id: randIcon() }],
+      [{ text: COMMENT_CATEGORIES.girl.label, callback_data: 'cmcat:girl', icon_custom_emoji_id: randIcon() }],
     ],
   };
 }
@@ -926,7 +952,7 @@ bot.onText(/^\/start$/, async (msg) => {
   const user = await getOrCreateUser(msg.from);
 
   const welcomeText =
-    `<tg-emoji emoji-id="${EMOTE.WELCOME}">🍬</tg-emoji><b>DigitalShopMm မှ ကြိုဆိုပါတယ်</b>\n\n` +
+    `${randTg()}<b>DigitalShopMm မှ ကြိုဆိုပါတယ်</b>\n\n` +
     `🛍Digital Products နှင့် Services များကို ငွေဖြည့်သွင်းပြီး လိုချင်သည့် ပစ္စည်းကို တိုက်ရိုက် လျှင်မြန်စွာဝယ်ယူနိုင်ပါသည်🛍\n\n` +
     `<tg-emoji emoji-id="${EMOTE.WALLET}">💳</tg-emoji>Wallet Balance: ${fmtKs(user.balance)}`;
 
@@ -944,7 +970,7 @@ bot.onText(/^\/menu$/, async (msg) => {
   const user = await getOrCreateUser(msg.from);
 
   const welcomeText =
-    `<tg-emoji emoji-id="${EMOTE.WELCOME}">🍬</tg-emoji><b>DigitalShopMm မှ ကြိုဆိုပါတယ်</b>\n\n` +
+    `${randTg()}<b>DigitalShopMm မှ ကြိုဆိုပါတယ်</b>\n\n` +
     `🛍Digital Products နှင့် Services များကို ငွေဖြည့်သွင်းပြီး လိုချင်သည့် ပစ္စည်းကို တိုက်ရိုက် လျှင်မြန်စွာဝယ်ယူနိုင်ပါသည်🛍\n\n` +
     `<tg-emoji emoji-id="${EMOTE.WALLET}">💳</tg-emoji>Wallet Balance: ${fmtKs(user.balance)}`;
 
@@ -1332,8 +1358,8 @@ bot.on('callback_query', async (query) => {
         const keyboard = { inline_keyboard: [] };
         if (totalPages > 1) {
           const navRow = [];
-          if (page > 1) navRow.push({ text: '⬅️ Back', callback_data: `orders:page:${page - 1}` });
-          if (page < totalPages) navRow.push({ text: 'Next ➡️', callback_data: `orders:page:${page + 1}` });
+          if (page > 1) navRow.push({ text: 'Back', callback_data: `orders:page:${page - 1}`, icon_custom_emoji_id: EMOTE.BACK });
+          if (page < totalPages) navRow.push({ text: 'Next', callback_data: `orders:page:${page + 1}`, icon_custom_emoji_id: EMOTE.CHOOSE_FLAG });
           if (navRow.length) keyboard.inline_keyboard.push(navRow);
         }
 
@@ -1415,8 +1441,8 @@ async function sendOrdersPage(msg, user, requestedPage) {
 
   if (totalPages > 1) {
     const navRow = [];
-    if (page > 1) navRow.push({ text: '⬅️ Back', callback_data: `orders:page:${page - 1}` });
-    if (page < totalPages) navRow.push({ text: 'Next ➡️', callback_data: `orders:page:${page + 1}` });
+    if (page > 1) navRow.push({ text: 'Back', callback_data: `orders:page:${page - 1}`, icon_custom_emoji_id: EMOTE.BACK });
+    if (page < totalPages) navRow.push({ text: 'Next', callback_data: `orders:page:${page + 1}`, icon_custom_emoji_id: EMOTE.CHOOSE_FLAG });
     if (navRow.length) keyboard.inline_keyboard.push(navRow);
   }
 
@@ -1510,8 +1536,8 @@ const userDepositState = new Map();
 function depositMethodKeyboard() {
   return {
     inline_keyboard: [
-      [{ text: 'KBZ Pay ဖြင့်ငွေသွင်းမည်', callback_data: 'deposit:kbz' }],
-      [{ text: 'Wave Pay ဖြင့်ငွေသွင်းမည်', callback_data: 'deposit:wave' }],
+      [{ text: 'KBZ Pay ဖြင့်ငွေသွင်းမည်', callback_data: 'deposit:kbz', icon_custom_emoji_id: EMOTE.KPAY_ICON }],
+      [{ text: 'Wave Pay ဖြင့်ငွေသွင်းမည်', callback_data: 'deposit:wave', icon_custom_emoji_id: EMOTE.WAVE_ICON }],
     ],
   };
 }
@@ -1532,7 +1558,7 @@ async function paymentInfoText(method) {
           `<tg-emoji emoji-id="${EMOTE.WELCOME}">🍬</tg-emoji>name - ${name}\n\n` +
           `ဆီသို့ ငွေလွဲပြီး screenshot ပို့ပေးပါ<tg-emoji emoji-id="${EMOTE.PARTY}">🤩</tg-emoji>`,
     reply_markup: {
-      inline_keyboard: [[{ text: '❌Cancel❌', callback_data: 'canceldeposit' }]]
+      inline_keyboard: [[{ text: 'Cancel', callback_data: 'canceldeposit', icon_custom_emoji_id: randIcon() }]]
     }
   };
 }
