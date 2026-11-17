@@ -30,92 +30,77 @@ if (!BOT_TOKEN || !MONGO_URI || !ADMIN_ID) {
 }
 
 // ---------- PREMIUM EMOJI IDs ----------
-// Note: Telegram Bot API မှာ keyboard button label ထဲကို custom/premium
-// emoji entity ထည့်လို့မရပါ (Telethon လို user-account library မှာသာ ရ)။
-// ဒါကြောင့် button label တွေမှာ ဒီ emoji ID တွေရဲ့ ပုံမှန် unicode
-// အနက်ကို ပြပေးထားပြီး၊ /start message စာသားထဲမှာတော့ tg-emoji
-// entity အနေနဲ့ premium emoji အစစ်ပြပေးထားပါတယ် (parse_mode: HTML).
 const EMOTE = {
-  WELCOME: '6260170796790980056',       // 🍬 welcome line
-  WALLET: '5328098344495490329',        // 💳 wallet balance line
-  PRODUCTS: '5359805631320571519',      // ▪️
-  MY_ORDERS: '5258011929993026890',     // 📦
-  ACCOUNT: '5323289282499064033',       // 👤
-  BALANCE: '5404359483155570991',       // 👛
-  JOIN_CHANNEL: '6113870986484913105',  // 👋
-  LANGUAGE: '5879585266426973039',      // 🌐
-  REDEEM_CODE: '5359664288241829619',   // 🎁
+  WELCOME: '6260170796790980056',
+  WALLET: '5328098344495490329',
+  PRODUCTS: '5359805631320571519',
+  MY_ORDERS: '5258011929993026890',
+  ACCOUNT: '5323289282499064033',
+  BALANCE: '5404359483155570991',
+  JOIN_CHANNEL: '6113870986484913105',
+  LANGUAGE: '5879585266426973039',
+  REDEEM_CODE: '5359664288241829619',
 
-  // ---- Products flow ----
-  SELECT_PRODUCT: '4900189275326252171', // 🖤 Select a product:
-  SVC_TELEGRAM: '6257974552379270658',   // 📱 Telegram
-  SVC_TELEGRAMM: '5472239203590888751',  // 📩 Telegramm
-  FLAG_MM: '6260246207826759565',        // 🇲🇲 +95
-  FLAG_CO: '5294111658396895748',        // 🇨🇴 +57
-  FLAG_US: '5987769694407368809',        // 🇺🇸 +1
-  CHOOSE_FLAG: '6159042351537853617',    // ➡️ CHOOSE YOUR Flag
-  TYPE_LABEL: '5298877105000439431',     // 🏷 Type:
-  PRICE_LABEL: '6039495948353146588',    // 🔖 Price:
-  INSTOCK_LABEL: '5323289282499064033',  // 📦 In stock:
-  PAGE_LABEL: '5197219609970758159',     // 📝 Page x of y
-  TAP_FLAG: '5231102735817918643',       // 👇 Tap a flag below to continue.
+  SELECT_PRODUCT: '4900189275326252171',
+  SVC_TELEGRAM: '6257974552379270658',
+  SVC_TELEGRAMM: '5472239203590888751',
+  FLAG_MM: '6260246207826759565',
+  FLAG_CO: '5294111658396895748',
+  FLAG_US: '5987769694407368809',
+  CHOOSE_FLAG: '6159042351537853617',
+  TYPE_LABEL: '5298877105000439431',
+  PRICE_LABEL: '6039495948353146588',
+  INSTOCK_LABEL: '5323289282499064033',
+  PAGE_LABEL: '5197219609970758159',
+  TAP_FLAG: '5231102735817918643',
 
-  // ---- Pre-purchase confirmation card ----
-  BEFORE_BUY: '5864114012542736772',     // 🔥 BEFORE YOU BUY
-  NEW_FLAG: '6158968370726179617',       // 🏷 New flag
-  RESTRICTIONS: '5420323339723881652',   // ⚠️ restrictions
-  BUY_NEW_FLAG: '5296369303661067030',   // 🔒 Buy new flag
-  GET_FLAG_HAPPY: '6114069998089539705', // ✅ (reused for: "make happy" line, Accept & Buy button, success alert)
-  CHANGE_FLAG: '5352587852880302091',    // ✈️ U can change new flag
-  PRODUCT_DISCLAIMER: '6114141543654757519', // 📌 PRODUCT DISCLAIMER
-  READ_DISCLAIMER: '5769482310915199790',    // 📢 Read Disclaimer (button)
-  BACK: '6257789602497572109',           // ⬅️ Back (button)
+  BEFORE_BUY: '5864114012542736772',
+  NEW_FLAG: '6158968370726179617',
+  RESTRICTIONS: '5420323339723881652',
+  BUY_NEW_FLAG: '5296369303661067030',
+  GET_FLAG_HAPPY: '6114069998089539705',
+  CHANGE_FLAG: '5352587852880302091',
+  PRODUCT_DISCLAIMER: '6114141543654757519',
+  READ_DISCLAIMER: '5769482310915199790',
+  BACK: '6257789602497572109',
 
-  // ---- Deposit / Top-up flow ----
-  DEPOSIT: '5222040745665379997',        // 💚 ငွေဖြည့်ရန် (ဟောင်း)
-  DEPOSIT_NEW: '5386757680679377085',     // 🤑 ငွေဖြည့်ရန် (Premium emote အသစ်)
-  MIN_AMOUNT: '5864114012542736772',     // 🔥 minimum amount notice
-  KPAY_ICON: '6201684659458280710',      // 💵 KPAY -
-  WAVE_ICON: '6057728063049830775',      // 🆗 WAVE Pay -
-  PARTY: '5226791576495216962',          // 🤩 screenshot pyo pay ba
-  ENTER_AMOUNT: '5987643272045010909',   // ➡️ amount ရိုက်ထည့်ပါ
-  MAX_NOTICE: '5226645496067542621',     // 🙋‍♀️ Maximum notice
-  SUBMITTED: '5201691993775818138',      // 🛫 submitted to admin
-  DEPOSIT_SUCCESS: '5253527915416539991', // 🤟 successful
+  DEPOSIT: '5222040745665379997',
+  DEPOSIT_NEW: '5386757680679377085',
+  MIN_AMOUNT: '5864114012542736772',
+  KPAY_ICON: '6201684659458280710',
+  WAVE_ICON: '6057728063049830775',
+  PARTY: '5226791576495216962',
+  ENTER_AMOUNT: '5987643272045010909',
+  MAX_NOTICE: '5226645496067542621',
+  SUBMITTED: '5201691993775818138',
+  DEPOSIT_SUCCESS: '5253527915416539991',
   GET_OTP: '6217723016529316157',
-  OUT_OF_STOCK_1: '5226700140936451703', // ‼️
-  OUT_OF_STOCK_2: '6260460969076465267', // ➡️
-  OUT_OF_STOCK_3: '6257789602497572109', // ⬅️
-  COMMENT_QTY: '6115968287735026787',    // 🥰
-  DONE_COMMENT: '6257974552379270658',   // 📱
-  DONE_ICON: '6257974552379270658',      // 📱
-  POST_LINK_ICON: '6260487164082005216', // 📢
+  OUT_OF_STOCK_1: '5226700140936451703',
+  OUT_OF_STOCK_2: '6260460969076465267',
+  OUT_OF_STOCK_3: '6257789602497572109',
+  COMMENT_QTY: '6115968287735026787',
+  DONE_COMMENT: '6257974552379270658',
+  DONE_ICON: '6257974552379270658',
+  POST_LINK_ICON: '6260487164082005216',
 };
 
 // ---------- RANDOM PREMIUM EMOTE POOL ----------
-// အပေါ်က EMOTE ထဲက အလုပ်လုပ်ပြီးသား ID တွေကို random ရွေးသုံးဖို့ pool ပါ။
-// ID အသစ်ထပ်ထည့်ချင်ရင် ဒီ array ထဲ { id, ch } ထည့်လိုက်ပါ။
 const EMOTE_POOL = [
   { id: '6115968287735026787', ch: '🥰' },
   { id: '6257974552379270658', ch: '📱' },
   { id: '6260487164082005216', ch: '📢' },
 ];
 const randEmote = () => EMOTE_POOL[Math.floor(Math.random() * EMOTE_POOL.length)];
-// Button icon (icon_custom_emoji_id) အတွက် random ID
 const randIcon = () => randEmote().id;
-// Message text (HTML) ထဲထည့်ဖို့ random <tg-emoji>
 const randTg = () => { const e = randEmote(); return `<tg-emoji emoji-id="${e.id}">${e.ch}</tg-emoji>`; };
 
-// ---------- အားလုံးမှာ ဒီ emote ID ၃ ခုကိုပဲ သုံးမယ် ----------
-// EMOTE ထဲက key တိုင်းကို ဖတ်တိုင်း pool ထဲက ID တစ်ခု random ပေးမယ်။
-// မူလ ID တွေ ပြန်သုံးချင်ရင် Render env မှာ EMOTE_MODE=original ထည့်ပါ။
 if (process.env.EMOTE_MODE !== 'original') {
   for (const key of Object.keys(EMOTE)) {
     Object.defineProperty(EMOTE, key, { get: () => randIcon(), enumerable: true, configurable: true });
   }
 }
 
-// ---- Products / Countries data (placeholder - DB ချိတ်ပြီးမှ dynamic လုပ်နိုင်) ----
+// ---- Products / Countries data ----
 const SERVICES = {
   telegram: { label: 'Buy Telegram Accounts', emoteId: EMOTE.SVC_TELEGRAM },
   telegramm: { label: 'Buy Telegram Comments', emoteId: EMOTE.SVC_TELEGRAMM },
@@ -132,7 +117,6 @@ const COUNTRIES = [
   { code: 'us', flag: '🇺🇸', dial: '+1', name: 'UnitedState', emoteId: EMOTE.FLAG_US, labelSuffix: ' Account  .' },
 ];
 
-// Price per country group (Ks) — button label ထဲမှာလည်း ဒီနေရာကနေ ရွေးပြသွားမှာပါ
 const PRICES = { mm: 2000, co: 1700, us: 1500 };
 const NUMBERS_PER_PAGE = 5;
 
@@ -171,7 +155,7 @@ const redeemCodeSchema = new mongoose.Schema({
   amount: { type: Number, required: true },
   maxUses: { type: Number, required: true },
   currentUses: { type: Number, default: 0 },
-  usedBy: [Number], // Array of telegramIds
+  usedBy: [Number],
   createdAt: { type: Date, default: Date.now },
 });
 const RedeemCode = mongoose.model('RedeemCode', redeemCodeSchema);
@@ -186,7 +170,7 @@ const commentAccountSchema = new mongoose.Schema({
   phoneNumber: { type: String, required: true, unique: true },
   sessionText: { type: String, required: true },
   gender: { type: String, enum: ['boy', 'girl'], required: true },
-  status: { type: String, default: 'active' }, // active | frozen
+  status: { type: String, default: 'active' },
   createdAt: { type: Date, default: Date.now },
 });
 const CommentAccount = mongoose.model('CommentAccount', commentAccountSchema);
@@ -194,30 +178,28 @@ const CommentAccount = mongoose.model('CommentAccount', commentAccountSchema);
 const commentOrderSchema = new mongoose.Schema({
   orderId: String,
   userId: Number,
-  type: String, // boy | girl
+  type: String,
   quantity: Number,
   postLink: String,
   comments: [String],
-  status: { type: String, default: 'processing' }, // processing | completed | failed
+  status: { type: String, default: 'processing' },
   processedCount: { type: Number, default: 0 },
   logs: [String],
   createdAt: { type: Date, default: Date.now },
 });
 const CommentOrder = mongoose.model('CommentOrder', commentOrderSchema);
 
-// ---- Phone Number (account inventory) schema ----
 const phoneNumberSchema = new mongoose.Schema({
-  number: { type: String, required: true }, // e.g. +95xxxxxxxxx
-  service: { type: String, required: true }, // telegram | telegramm
-  countryCode: { type: String, required: true }, // mm | co | us
+  number: { type: String, required: true },
+  service: { type: String, required: true },
+  countryCode: { type: String, required: true },
   price: { type: Number, required: true },
   sessionText: { type: String, required: true },
-  status: { type: String, default: 'available' }, // available | sold
+  status: { type: String, default: 'available' },
   createdAt: { type: Date, default: Date.now },
 });
 const PhoneNumber = mongoose.model('PhoneNumber', phoneNumberSchema);
 
-// ---- Payment method settings (singleton doc, admin-editable) ----
 const paymentSettingsSchema = new mongoose.Schema({
   kbzNumber: { type: String, default: '09784214387' },
   kbzName: { type: String, default: 'Mg Wai Yan Tun' },
@@ -232,13 +214,12 @@ async function getPaymentSettings() {
   return settings;
 }
 
-// ---- Deposit / top-up request schema ----
 const depositRequestSchema = new mongoose.Schema({
   userId: { type: Number, required: true },
-  method: { type: String, required: true }, // kbz | wave
+  method: { type: String, required: true },
   amountRequested: { type: Number, required: true },
   screenshotFileId: { type: String, required: true },
-  status: { type: String, default: 'pending' }, // pending | confirmed | cancelled
+  status: { type: String, default: 'pending' },
   adminChatId: Number,
   adminMessageId: Number,
   createdAt: { type: Date, default: Date.now },
@@ -250,10 +231,7 @@ async function getOrCreateUser(from) {
   return await User.findOneAndUpdate(
     { telegramId: from.id },
     {
-      $setOnInsert: {
-        telegramId: from.id,
-        createdAt: new Date(),
-      },
+      $setOnInsert: { telegramId: from.id, createdAt: new Date() },
       $set: {
         username: from.username || '',
         firstName: from.first_name || '',
@@ -268,7 +246,7 @@ function fmtKs(n) {
 }
 
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(ms, resolve));
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 async function processCommentOrder(orderId) {
@@ -281,18 +259,15 @@ async function processCommentOrder(orderId) {
     if (isNotiOn) await bot.sendMessage(ADMIN_ID, `❌ Comment Order #${orderId} failed: No active accounts found.`);
     return;
   }
-  
-  // Use each account only once for one comment
-  const accounts = allAccounts.slice(0, order.quantity);
 
-  const delays = [2 * 60 * 1000, 1 * 60 * 1000, 30 * 1000]; // 2m, 1m, 30s
+  const accounts = allAccounts.slice(0, order.quantity);
+  const delays = [2 * 60 * 1000, 1 * 60 * 1000, 30 * 1000];
   let delayIdx = 0;
 
   for (let i = 0; i < order.quantity; i++) {
     const acc = accounts[i];
     const commentText = order.comments[i];
-    
-    // Wait for the specific delay
+
     await new Promise(r => setTimeout(r, delays[delayIdx]));
     delayIdx = (delayIdx + 1) % delays.length;
 
@@ -302,8 +277,7 @@ async function processCommentOrder(orderId) {
 
       let channelName = order.postLink.split('/').slice(-2, -1)[0];
       let postMsgId = parseInt(order.postLink.split('/').pop().split('?')[0]);
-      
-      // If the link already contains a comment ID, use it directly
+
       const urlParams = new URLSearchParams(order.postLink.split('?')[1] || '');
       const directCommentId = urlParams.get('comment');
 
@@ -311,23 +285,20 @@ async function processCommentOrder(orderId) {
       let replyToMsgId = postMsgId;
 
       try {
-        // Step 1: Get discussion info to find the linked group and the thread header message
         const discussion = await client.invoke(new Api.messages.GetDiscussionMessage({
           peer: channelName,
           msgId: postMsgId
         }));
 
         if (discussion && discussion.messages && discussion.messages.length > 0) {
-          // The first message in the response is the root of the thread in the group
           const discMsg = discussion.messages[0];
           replyToMsgId = discMsg.id;
-          
-          // Find the group (linked chat)
-          const linkedChat = discussion.chats.find(c => 
-            c.id.toString() === discMsg.peerId.channelId?.toString() || 
+
+          const linkedChat = discussion.chats.find(c =>
+            c.id.toString() === discMsg.peerId.channelId?.toString() ||
             c.id.toString() === discMsg.peerId.chatId?.toString()
           );
-          
+
           if (linkedChat) {
             targetChat = linkedChat;
           }
@@ -335,19 +306,16 @@ async function processCommentOrder(orderId) {
       } catch (e) {
         console.log("GetDiscussionMessage failed:", e.message);
       }
-      
-      // If we have a direct comment ID from the link, it might be more accurate
+
       if (directCommentId) {
         replyToMsgId = parseInt(directCommentId);
       }
 
-      // Step 2: Ensure we are in the group
       try {
         await client.invoke(new Api.channels.JoinChannel({ channel: targetChat })).catch(() => {});
       } catch (e) {}
       await new Promise(r => setTimeout(r, 3000));
 
-      // Step 3: Post the comment
       await client.sendMessage(targetChat, {
         message: commentText,
         replyTo: replyToMsgId,
@@ -363,9 +331,8 @@ async function processCommentOrder(orderId) {
         await bot.sendMessage(ADMIN_ID, `📝 <b>Comment Progress (#${orderId})</b>\nAcc: ${acc.phoneNumber}\nMsg: ${commentText}\nStatus: Success`, { parse_mode: 'HTML' });
       }
 
-      // If this was the last comment, notify user with summary
       if (order.processedCount === order.quantity) {
-        const summaryMsg = 
+        const summaryMsg =
           `<tg-emoji emoji-id="${EMOTE.DONE_COMMENT}">📱</tg-emoji> <b>Done Comments</b>\n\n` +
           `<tg-emoji emoji-id="${EMOTE.POST_LINK_ICON}">📢</tg-emoji> <b>Post Link:</b> ${order.postLink}\n\n` +
           `<b>Comments Posted:</b>\n${order.comments.map((c, idx) => `${idx + 1}. ${c}`).join('\n')}`;
@@ -374,7 +341,7 @@ async function processCommentOrder(orderId) {
     } catch (err) {
       order.logs.push(`❌ [${acc.phoneNumber}] Fail: ${err.message}`);
       await order.save();
-      
+
       if (isNotiOn) {
         await bot.sendMessage(ADMIN_ID, `⚠️ <b>Comment Fail (#${orderId})</b>\nAcc: ${acc.phoneNumber}\nMsg: ${commentText}\nError: ${err.message}\nLink: ${order.postLink}`, { parse_mode: 'HTML' });
       }
@@ -384,7 +351,6 @@ async function processCommentOrder(orderId) {
   order.status = 'completed';
   await order.save();
 
-  // Notify User
   await bot.sendMessage(
     order.userId,
     `<tg-emoji emoji-id="${EMOTE.DONE_ICON}">📱</tg-emoji><b>Done Comments</b>\n` +
@@ -393,8 +359,7 @@ async function processCommentOrder(orderId) {
   );
 }
 
-// ---------- KEYBOARD (matches the reference screenshot layout,
-// cascaded one step as requested) ----------
+// ---------- KEYBOARD ----------
 function mainMenuKeyboard() {
   return {
     reply_markup: {
@@ -419,12 +384,6 @@ function mainMenuKeyboard() {
   };
 }
 
-// ---------- PRODUCTS FLOW KEYBOARDS ----------
-// Note: inline button label ထဲမှာလည်း custom/premium emoji entity
-// ထည့်လို့မရတာ Bot API limitation အတူတူပါပဲ (Reply keyboard အတွက်
-// ရှင်းထားသလိုပါပဲ) — ဒါကြောင့် button label တွေမှာ ပုံမှန် unicode
-// flag/emoji ပဲ သုံးထားပြီး၊ edit လုပ်တဲ့ message text ထဲမှာတော့
-// premium emoji ID တွေကို tg-emoji entity နဲ့ ပြထားပါတယ်။
 function serviceSelectKeyboard() {
   return {
     inline_keyboard: [
@@ -451,14 +410,10 @@ function countrySelectKeyboard(serviceKey) {
       icon_custom_emoji_id: c.emoteId,
     },
   ]);
-  // Add Back button to return to service selection
   rows.push([{ text: 'Back', callback_data: 'back_to_services', icon_custom_emoji_id: EMOTE.BACK }]);
   return { inline_keyboard: rows };
 }
 
-// Product card + phone-number BUTTONS, paginated NUMBERS_PER_PAGE at a time.
-// totalPages is fully dynamic — derived from however many numbers admin
-// has added for that service+country group (Math.ceil(total / 5)).
 async function buildProductCard(serviceKey, country, requestedPage) {
   const filter = { service: serviceKey, countryCode: country.code, status: 'available' };
   const total = await PhoneNumber.countDocuments(filter);
@@ -470,8 +425,6 @@ async function buildProductCard(serviceKey, country, requestedPage) {
     .limit(NUMBERS_PER_PAGE);
 
   const price = PRICES[country.code] || 0;
-
-  // Label column ကို width တူအောင် pad ထားလို့ colon တွေ တန်းတူ ကျချိန်ညှိပါ
   const padLabel = (label) => label.padEnd(10, ' ');
 
   const text =
@@ -485,10 +438,6 @@ async function buildProductCard(serviceKey, country, requestedPage) {
     `━━━━━━━━━━━━━━━━\n` +
     `<tg-emoji emoji-id="${EMOTE.TAP_FLAG}">👇</tg-emoji><b>Tap a phone number below to continue.</b>`;
 
-  // Each available number becomes its own button; Back/Next row goes
-  // underneath the number buttons (only shown when relevant).
-  // callback_data carries service/country/page so the purchase flow can
-  // return the user to exactly this page afterwards.
   const rows = numbers.length
     ? numbers.map((n) => [
         {
@@ -499,33 +448,30 @@ async function buildProductCard(serviceKey, country, requestedPage) {
       ])
     : [
         [
-          { 
-            text: 'OUT OF STOCK', 
+          {
+            text: 'OUT OF STOCK',
             callback_data: 'noop',
-            icon_custom_emoji_id: EMOTE.OUT_OF_STOCK_1 // ‼️ premium emote
+            icon_custom_emoji_id: EMOTE.OUT_OF_STOCK_1
           }
         ]
       ];
 
   const navRow = [];
-  // Back button (left) and Next button (right) side-by-side
   if (page > 1) {
     navRow.push({ text: 'Back', callback_data: `page:${serviceKey}:${country.code}:${page - 1}`, icon_custom_emoji_id: EMOTE.BACK });
   } else {
-    // If on page 1, show Back button to return to country selection
     navRow.push({ text: 'Back', callback_data: `svc:${serviceKey}`, icon_custom_emoji_id: EMOTE.BACK });
   }
 
   if (page < totalPages) {
     navRow.push({ text: 'Next', callback_data: `page:${serviceKey}:${country.code}:${page + 1}`, icon_custom_emoji_id: EMOTE.CHOOSE_FLAG });
   }
-  
+
   if (navRow.length) rows.push(navRow);
 
   return { text, keyboard: { inline_keyboard: rows } };
 }
 
-// Pre-purchase confirmation card ("BEFORE YOU BUY")
 async function buildPrePurchaseCard(phoneDoc, country, serviceKey, page) {
   const disclaimerLink = (await Config.findOne({ key: 'disclaimer_link' }))?.value || CHANNEL_LINK;
   const text =
@@ -555,8 +501,6 @@ async function buildPrePurchaseCard(phoneDoc, country, serviceKey, page) {
 }
 
 // ---------- ADMIN COMMAND LIST ----------
-// Admin-only commands. If a non-admin user sends any of these,
-// the bot stays completely silent (no reply at all).
 const ADMIN_COMMANDS = [
   '/admin',
   '/addmoney',
@@ -592,10 +536,6 @@ function isAdminCommand(text) {
 const bot = new TelegramBot(BOT_TOKEN, { polling: true });
 bot.on('polling_error', (err) => console.error('Polling error:', err.message));
 
-// ---------- CHAT MENU BUTTON (attach icon ဘေးက icon) ----------
-// User က session clear ပြီး ပြန်ဝင်လာရင် /start ကို ကိုယ်တိုင်ရိုက်စရာမလိုဘဲ
-// text box ဘေး (attach 📎 icon ဘေး) ကလေး icon ကိုနှိပ်ရုံနဲ့ command list
-// (/start, /menu) ပေါ်လာပြီး main menu ကို ချက်ချင်းပြန်ခေါ်နိုင်အောင် သတ်မှတ်ခြင်း
 bot.setMyCommands([
   { command: 'start', description: '🍬 Main Menu ပြန်ဖွင့်ရန်' },
   { command: 'menu', description: '📋 Main Menu ပြန်ဖွင့်ရန်' },
@@ -605,13 +545,9 @@ bot.setChatMenuButton({ menu_button: { type: 'commands' } }).catch((err) =>
   console.error('setChatMenuButton error:', err.message)
 );
 
-// In-memory conversation state for the admin's multi-step /addnumber flow.
-// (Single admin, so a simple Map keyed by admin id is enough.)
 const adminState = new Map();
 
 // ---------- ADMIN: PREMIUM EMOJI ID FINDER ----------
-// Admin က premium/custom emoji ပါတဲ့ message ကို bot ဆီပို့ရင်
-// emoji ID တွေကို ပြန်ပြောပြပေးမယ် (EMOTE / EMOTE_POOL ထဲ ကူးထည့်ဖို့)။
 bot.on('message', async (msg) => {
   try {
     if (!msg.from || msg.from.id !== ADMIN_ID) return;
@@ -634,19 +570,15 @@ bot.on('message', async (msg) => {
   const userId = msg.from.id;
   const chatId = msg.chat.id;
 
-  // Global Admin Check
   if (isAdminCommand(text) && userId !== ADMIN_ID) return;
 
-  // Ban Check
   const user = await getOrCreateUser(msg.from);
   if (user.isBanned && userId !== ADMIN_ID) {
     return bot.sendMessage(chatId, '❌ သင်သည် Bot အသုံးပြုခွင့် ပိတ်ပင်ခံထားရပါသည်။');
   }
 
-  // Check if user is in a deposit flow
   const depositState = userDepositState.get(userId);
   if (depositState) {
-    // အခြား menu button တွေနှိပ်ရင် စာသားမပို့ဘဲ screenshot ပဲ တောင်းမယ်
     const isMenuButton = ['Products', 'My Orders', 'Account', 'Balance', 'Join Channel', 'Language', 'Redeem Code'].includes(text);
     if (isMenuButton) {
       return bot.sendMessage(chatId, '📸 ငွေလွှဲ Screenshot (ပုံ) ကို ပို့ပေးပါ။ (သို့မဟုတ် ❌Cancel❌ ကိုနှိပ်ပါ)');
@@ -738,7 +670,7 @@ bot.on('message', async (msg) => {
       const phone = text.split(' ')[1];
       const acc = await CommentAccount.findOne({ phoneNumber: phone });
       if (!acc) return bot.sendMessage(chatId, '❌ ဤဖုန်းနံပါတ်ဖြင့် အကောင့်မရှိပါ။');
-      
+
       try {
         const client = new TelegramClient(new StringSession(acc.sessionText), API_ID, API_HASH, { connectionRetries: 3 });
         await client.connect();
@@ -769,14 +701,13 @@ bot.on('message', async (msg) => {
     if (state && state.step === 'awaiting_comment_session') {
       const sessionStr = text.trim();
       try {
-        // Validate session string
         const client = new TelegramClient(new StringSession(sessionStr), API_ID, API_HASH, { connectionRetries: 1 });
         await client.connect();
         const isAuth = await client.isUserAuthorized();
         await client.disconnect();
-        
+
         if (!isAuth) return bot.sendMessage(chatId, '❌ Session string မမှန်ကန်ပါ သို့မဟုတ် Unauthorized ဖြစ်နေပါသည်။');
-        
+
         await CommentAccount.updateOne(
           { phoneNumber: state.phoneNumber },
           { sessionText: sessionStr, gender: state.gender, status: 'active' },
@@ -796,7 +727,7 @@ bot.on('message', async (msg) => {
     if (state.step === 'awaiting_comment_qty') {
       const qtyStr = text.trim();
       if (!/^\d+$/.test(qtyStr)) return bot.sendMessage(chatId, '❌ Send only English number.');
-      
+
       const qty = parseInt(qtyStr);
       if (qty < 1) return bot.sendMessage(chatId, '❌ Enter Minimum 1.');
       if (qty > state.stockCount) return bot.sendMessage(chatId, `❌ Maximum ${state.stockCount}.`);
@@ -814,24 +745,23 @@ bot.on('message', async (msg) => {
       if (personalRegex.test(link) && !channelPostRegex.test(link)) {
         return bot.sendMessage(chatId, '❌ Channel Link သာ ပို့ပေးပါ (Personal account link မရပါ)။');
       }
-      
-      // Force user to provide a link with ?comment=
+
       if (!commentLinkRegex.test(link)) {
         return bot.sendMessage(chatId, '❌ Channel post link အောက်မှရေးထားသော comment link တစ်ခုကိုသာ copy ယူပို့ပါ');
       }
-      
+
       if (!channelPostRegex.test(link)) {
         return bot.sendMessage(chatId, '❌ Link ပုံစံ မှားယွင်းနေပါသည်။ Link အမှန် ပြန်ပို့ပေးပါ။');
       }
 
       adminState.set(userId, { ...state, step: 'awaiting_comment_texts', postLink: link });
-      
+
       let exampleLines = "";
       for (let i = 1; i <= Math.min(state.quantity, 2); i++) {
         exampleLines += `${i}. ${i === 1 ? 'Hello' : 'Test'}\n`;
       }
 
-      const helpMsg = 
+      const helpMsg =
         `✍️ <b>Custom Comment များ ပို့ပေးပါ</b>\n\n` +
         `အရေအတွက် <b>${state.quantity}</b> ခုအတွက် အောက်ပါအတိုင်း နံပါတ်စဉ်တပ်ပြီး ပို့ပေးပါ -\n` +
         `${exampleLines}\n` +
@@ -842,7 +772,6 @@ bot.on('message', async (msg) => {
     if (state.step === 'awaiting_comment_texts') {
       const lines = text.split('\n').map(l => l.trim()).filter(l => l !== '');
       const parsedComments = lines.map(line => {
-        // Remove leading number and dot (e.g., "1. ", "1.1. ", "1)")
         return line.replace(/^\d+[\.\)]\s*/, '').trim();
       }).filter(c => c !== '');
 
@@ -850,7 +779,6 @@ bot.on('message', async (msg) => {
         return bot.sendMessage(chatId, `❌ Comment အရေအတွက် မပြည့်စုံပါ။ <b>${state.quantity}</b> ခု ပြည့်အောင် ပို့ပေးပါ။`, { parse_mode: 'HTML' });
       }
 
-      // Finalize Order
       const finalComments = parsedComments.slice(0, state.quantity);
       const pricePerCm = COMMENT_CATEGORIES[state.gender].price;
       const totalPrice = pricePerCm * state.quantity;
@@ -861,7 +789,6 @@ bot.on('message', async (msg) => {
         return bot.sendMessage(chatId, `❌ Balance မလုံလောက်ပါ။ လိုအပ်သည်: ${fmtKs(totalPrice)}, လက်ရှိ: ${fmtKs(userDoc.balance)}`);
       }
 
-      // Deduct balance and create order
       userDoc.balance -= totalPrice;
       const orderId = crypto.randomBytes(4).toString('hex');
       userDoc.orders.push({
@@ -884,11 +811,10 @@ bot.on('message', async (msg) => {
 
       adminState.delete(userId);
       await bot.sendMessage(chatId, `✅ <b>Order တင်ခြင်း အောင်မြင်ပါသည်!</b>\nComment များကို စတင်မန့်ပေးနေပါပြီ။ ပြီးစီးပါက အကြောင်းကြားပေးပါမည်။`, { parse_mode: 'HTML' });
-      
-      // Notify Admin if enabled
+
       const isNotiOn = (await Config.findOne({ key: 'admin_noti' }))?.value;
       if (isNotiOn) {
-        const adminMsg = 
+        const adminMsg =
           `🔔 <b>New Comment Order</b>\n` +
           `Order ID: <code>#${orderId}</code>\n` +
           `User: @${msg.from.username || '-'}\n` +
@@ -899,7 +825,6 @@ bot.on('message', async (msg) => {
         await bot.sendMessage(ADMIN_ID, adminMsg, { parse_mode: 'HTML' });
       }
 
-      // Start processing (this will be handled by a separate background function)
       processCommentOrder(orderId);
       return;
     }
@@ -925,12 +850,12 @@ bot.on('message', async (msg) => {
 });
 
 // ==========================================================
-//  /start
+//  /admin
 // ==========================================================
 bot.onText(/^\/admin$/, async (msg) => {
   if (msg.from.id !== ADMIN_ID) return;
 
-  const adminHelp = 
+  const adminHelp =
     `🛠 <b>Admin Panel Commands</b>\n\n` +
     `👤 <b>User Management</b>\n` +
     `• <code>/userinfo [userId]</code> - User အချက်အလက်ကြည့်ရန်\n` +
@@ -979,9 +904,6 @@ bot.onText(/^\/start$/, async (msg) => {
   });
 });
 
-// /menu -> text box ဘေးက menu icon ကနေရော၊ ရိုက်ရိုက်ပို့ပို့ /start အတိုင်းပဲ
-// main menu ကို ချက်ချင်းပြန်ဖွင့်ပေးမယ် (session clear ဖြစ်နေလည်း /start
-// ကို ကိုယ်တိုင်ရိုက်စရာမလို)
 bot.onText(/^\/menu$/, async (msg) => {
   const chatId = msg.chat.id;
   const user = await getOrCreateUser(msg.from);
@@ -998,7 +920,7 @@ bot.onText(/^\/menu$/, async (msg) => {
 });
 
 // ==========================================================
-//  USER MENU HANDLERS (Reply Keyboard button presses)
+//  USER MENU HANDLERS
 // ==========================================================
 bot.onText(/^Products$/, async (msg) => {
   await bot.sendMessage(
@@ -1008,7 +930,7 @@ bot.onText(/^Products$/, async (msg) => {
   );
 });
 
-// ---------- CALLBACK QUERY (inline button taps inside Products flow) ----------
+// ---------- CALLBACK QUERY ----------
 bot.on('callback_query', async (query) => {
   const data = query.data || '';
   const chatId = query.message.chat.id;
@@ -1016,15 +938,13 @@ bot.on('callback_query', async (query) => {
 
   try {
     if (data === 'opendeposit') {
-      // Balance စာသားအောက်က ငွေဖြည့်ရန် inline button ကိုနှိပ်ရင် ငွေဖြည့်နည်းလမ်း ရွေးခိုင်းမယ်
       await bot.sendMessage(chatId, 'ငွေဖြည့်ရန် နည်းလမ်းရွေးချယ်ပါ 👇', {
         reply_markup: depositMethodKeyboard(),
       });
       await bot.answerCallbackQuery(query.id);
       return;
     } else if (data.startsWith('deposit:')) {
-      // KBZ Pay / Wave Pay ရွေးလိုက်ရင် - account info ပြပြီး screenshot တောင်း
-      const method = data.split(':')[1]; // kbz | wave
+      const method = data.split(':')[1];
       const info = await paymentInfoText(method);
       await bot.editMessageText(info.text, {
         chat_id: chatId,
@@ -1036,7 +956,6 @@ bot.on('callback_query', async (query) => {
       await bot.answerCallbackQuery(query.id);
       return;
     } else if (data.startsWith('svc:')) {
-      // Step 1 -> Step 2: service ရွေးပြီးရင် country/flag buttons အဖြစ်ပြောင်း
       const serviceKey = data.split(':')[1];
       if (serviceKey === 'telegramm') {
         await bot.editMessageReplyMarkup(commentCategoryKeyboard(), {
@@ -1055,9 +974,9 @@ bot.on('callback_query', async (query) => {
       const minPrice = COMMENT_CATEGORIES[gender].price;
 
       if (userDoc.balance < minPrice) {
-        return bot.answerCallbackQuery(query.id, { 
-          text: `❌ Balance မလုံလောက်ပါ။ အနည်းဆုံး ${fmtKs(minPrice)} ရှိမှ ဝယ်ယူနိုင်ပါသည်။ ငွေဖြည့်သွင်းပြီးမှ ဆက်လက်လုပ်ဆောင်ပါ။`, 
-          show_alert: true 
+        return bot.answerCallbackQuery(query.id, {
+          text: `❌ Balance မလုံလောက်ပါ။ အနည်းဆုံး ${fmtKs(minPrice)} ရှိမှ ဝယ်ယူနိုင်ပါသည်။ ငွေဖြည့်သွင်းပြီးမှ ဆက်လက်လုပ်ဆောင်ပါ။`,
+          show_alert: true
         });
       }
 
@@ -1070,7 +989,6 @@ bot.on('callback_query', async (query) => {
       await bot.sendMessage(chatId, `<tg-emoji emoji-id="${EMOTE.COMMENT_QTY}">🥰</tg-emoji>မန့်မည့် Comment အရေအတွက် ပို့ပေးပါ... (Maximum: ${stockCount})`, { parse_mode: 'HTML' });
       await bot.answerCallbackQuery(query.id);
     } else if (data.startsWith('country:')) {
-      // Step 2 -> Step 3: country ရွေးပြီးရင် product card + number list (page 1) ပြ
       const [, serviceKey, countryCode] = data.split(':');
       const country = COUNTRIES.find((c) => c.code === countryCode);
       const { text, keyboard } = await buildProductCard(serviceKey, country, 1);
@@ -1081,7 +999,6 @@ bot.on('callback_query', async (query) => {
         reply_markup: keyboard,
       });
     } else if (data.startsWith('page:')) {
-      // Next / Back pagination inside a country's number list
       const [, serviceKey, countryCode, pageStr] = data.split(':');
       const country = COUNTRIES.find((c) => c.code === countryCode);
       const { text, keyboard } = await buildProductCard(serviceKey, country, Number(pageStr));
@@ -1092,8 +1009,6 @@ bot.on('callback_query', async (query) => {
         reply_markup: keyboard,
       });
     } else if (data.startsWith('num:')) {
-      // Step 3 -> Step 4: user tapped one specific phone-number button
-      // -> show the "BEFORE YOU BUY" confirmation card.
       const [, id, serviceKey, countryCode, pageStr] = data.split(':');
       const phoneDoc = await PhoneNumber.findById(id);
       const country = COUNTRIES.find((c) => c.code === countryCode);
@@ -1102,7 +1017,6 @@ bot.on('callback_query', async (query) => {
           text: '❌ ဒီ Number ကို ရနိုင်တော့မည် မဟုတ်ပါ (ရောင်းပြီးသား ဖြစ်နိုင်ပါတယ်)။',
           show_alert: true,
         });
-        // list ကို refresh ပြန်ပြ (sold ဖြစ်သွားပြီဆိုရင် list ထဲက ပျောက်သွားအောင်)
         const { text, keyboard } = await buildProductCard(serviceKey, country, Number(pageStr));
         await bot.editMessageText(text, { chat_id: chatId, message_id: messageId, parse_mode: 'HTML', reply_markup: keyboard });
         return;
@@ -1115,7 +1029,6 @@ bot.on('callback_query', async (query) => {
         reply_markup: keyboard,
       });
     } else if (data.startsWith('back:')) {
-      // Back button on the "BEFORE YOU BUY" card -> return to the number list
       const [, serviceKey, countryCode, pageStr] = data.split(':');
       const country = COUNTRIES.find((c) => c.code === countryCode);
       const { text, keyboard } = await buildProductCard(serviceKey, country, Number(pageStr));
@@ -1126,7 +1039,6 @@ bot.on('callback_query', async (query) => {
         reply_markup: keyboard,
       });
     } else if (data.startsWith('accept:')) {
-      // Purchase confirmed -> deduct balance, mark number sold, record order
       const [, id, serviceKey, countryCode, pageStr] = data.split(':');
       const country = COUNTRIES.find((c) => c.code === countryCode);
       const phoneDoc = await PhoneNumber.findById(id);
@@ -1150,8 +1062,6 @@ bot.on('callback_query', async (query) => {
         return;
       }
 
-      // Deduct balance + mark sold (best-effort atomicity: guard on status
-      // still 'available' so two simultaneous buyers can't double-spend it)
       const stillAvailable = await PhoneNumber.findOneAndUpdate(
         { _id: phoneDoc._id, status: 'available' },
         { status: 'sold' },
@@ -1168,12 +1078,11 @@ bot.on('callback_query', async (query) => {
       }
 
       const orderId = crypto.randomBytes(4).toString('hex');
-      // Atomic balance deduction
       const updatedUser = await User.findOneAndUpdate(
         { telegramId: query.from.id, balance: { $gte: phoneDoc.price } },
-        { 
+        {
           $inc: { balance: -phoneDoc.price },
-          $push: { 
+          $push: {
             orders: {
               orderId: orderId,
               productName: `${country.flag}${country.dial} ${country.name} flag`,
@@ -1189,8 +1098,6 @@ bot.on('callback_query', async (query) => {
       );
 
       if (!updatedUser) {
-        // This shouldn't happen if the earlier balance check passed, 
-        // but good for safety in case of concurrent buys.
         await PhoneNumber.findOneAndUpdate({ _id: phoneDoc._id }, { status: 'available' });
         return bot.answerCallbackQuery(query.id, { text: '❌ Balance မလုံလောက်ပါ သို့မဟုတ် Error ဖြစ်ပွားခဲ့သည်။', show_alert: true });
       }
@@ -1200,7 +1107,7 @@ bot.on('callback_query', async (query) => {
         show_alert: false,
       });
 
-      const successText = 
+      const successText =
         `<tg-emoji emoji-id="${EMOTE.GET_FLAG_HAPPY}">✅</tg-emoji> <b>Purchase successful!</b>\n` +
         `Order: <code>#${orderId}</code>\n` +
         `Product: Account\n` +
@@ -1232,82 +1139,122 @@ bot.on('callback_query', async (query) => {
         return bot.answerCallbackQuery(query.id, { text: '❌ Order မတွေ့ပါ။', show_alert: true });
       }
 
-      // Send waiting message instead of notification
-      const waitingMsg = await bot.sendMessage(chatId, 'OTP ပို့နေပါတယ် 1-20 seconds စောင့်ပေးပါ.....');
+      // Answer callback immediately so the button spinner stops
       await bot.answerCallbackQuery(query.id);
 
-      try {
-        const { stdout } = await execPromise(`python3 otp_fetcher.py "${order.sessionText}"`);
-        const result = JSON.parse(stdout);
+      const waitingMsg = await bot
+        .sendMessage(chatId, 'OTP ပို့နေပါတယ် 1-20 seconds စောင့်ပေးပါ.....')
+        .catch(() => null);
 
-        // Delete waiting message
-        await bot.deleteMessage(chatId, waitingMsg.message_id).catch(() => {});
+      const cleanupWaiting = async () => {
+        if (waitingMsg && waitingMsg.message_id) {
+          await bot.deleteMessage(chatId, waitingMsg.message_id).catch(() => {});
+        }
+      };
+
+      const resendKeyboard = {
+        reply_markup: {
+          inline_keyboard: [[
+            { text: 'Resend', callback_data: `resend:${orderId}`, icon_custom_emoji_id: EMOTE.GET_OTP }
+          ]]
+        }
+      };
+
+      try {
+        // Hard cap the python process so the UI can never hang forever
+        const { stdout, stderr } = await execPromise(
+          `python3 otp_fetcher.py ${JSON.stringify(order.sessionText)}`,
+          { timeout: 45000, maxBuffer: 1024 * 1024 }
+        );
+
+        await cleanupWaiting();
+
+        if (stderr && stderr.trim()) {
+          console.error('otp_fetcher stderr:', stderr.trim());
+        }
+
+        let result;
+        try {
+          result = JSON.parse((stdout || '').trim());
+        } catch (parseErr) {
+          console.error('otp_fetcher bad stdout:', stdout);
+          return bot.sendMessage(
+            chatId,
+            '❌ OTP fetcher returned invalid output. ခဏနေမှ ပြန်ကြိုးစားပါ။',
+            resendKeyboard
+          );
+        }
 
         if (result.error) {
-          await bot.sendMessage(chatId, `❌ Error: ${result.error}\n\nOTP မရရှိသေးပါ။ Telegram တွင် OTP ပို့ထားခြင်း ရှိမရှိ စစ်ဆေးပြီး Resend ကို နှိပ်ပါ။`);
+          await bot.sendMessage(
+            chatId,
+            `❌ Error: ${result.error}\n\nOTP မရရှိသေးပါ။ Telegram တွင် OTP ပို့ထားခြင်း ရှိမရှိ စစ်ဆေးပြီး Resend ကို နှိပ်ပါ။`,
+            resendKeyboard
+          );
+          return;
+        }
+
+        const orderTimeTs = order.createdAt.getTime() / 1000;
+        let isNewLogin = false;
+        if (result.latest_auth_date > orderTimeTs) {
+          isNewLogin = true;
+          if (!order.loginConfirmed) {
+            await User.updateOne(
+              { telegramId: user.telegramId, 'orders.orderId': order.orderId },
+              { $set: { 'orders.$.loginConfirmed': true } }
+            );
+          }
+        }
+
+        if (!result.otp) {
+          let msg = `OTP မရရှိသေးပါ။ Telegram တွင် OTP ပို့ထားခြင်း ရှိမရှိ စစ်ဆေးပြီး Resend ကို နှိပ်ပါ။`;
+          if (isNewLogin) msg += `\n\n✅ <b>Successfully Login</b>`;
+
+          await bot.sendMessage(chatId, msg, {
+            parse_mode: 'HTML',
+            ...resendKeyboard,
+          });
         } else {
-          // Check for new login in this action too
-          const orderTimeTs = order.createdAt.getTime() / 1000;
-          let isNewLogin = false;
-          if (result.latest_auth_date > orderTimeTs) {
-            isNewLogin = true;
-            if (!order.loginConfirmed) {
-              await User.updateOne(
-                { telegramId: user.telegramId, 'orders.orderId': order.orderId },
-                { $set: { 'orders.$.loginConfirmed': true } }
-              );
-            }
+          const otpMatch = result.otp.text.match(/\d{5,6}/);
+          const otpCode = otpMatch ? otpMatch[0] : result.otp.text;
+
+          let otpText = `💰 <b>OTP Code:</b> <code>${otpCode}</code>\n` +
+                        `🔒 <b>2step password:</b> <code>12345678@Nn</code>`;
+
+          if (isNewLogin) {
+            otpText += `\n\n✅ <b>Successfully Login</b>`;
           }
 
-          if (!result.otp) {
-            let msg = `OTP မရရှိသေးပါ။ Telegram တွင် OTP ပို့ထားခြင်း ရှိမရှိ စစ်ဆေးပြီး Resend ကို နှိပ်ပါ။`;
-            if (isNewLogin) msg += `\n\n✅ <b>Successfully Login</b>`;
-            
-            await bot.sendMessage(chatId, msg, {
-              parse_mode: 'HTML',
-              reply_markup: {
-                inline_keyboard: [[{ text: 'Resend', callback_data: `resend:${orderId}`, icon_custom_emoji_id: EMOTE.GET_OTP }]]
-              }
-            });
-          } else {
-            const otpMatch = result.otp.text.match(/\d{5,6}/);
-            const otpCode = otpMatch ? otpMatch[0] : result.otp.text;
-            
-            let otpText = `💰 <b>OTP Code:</b> <code>${otpCode}</code>\n` +
-                          `🔒 <b>2step password:</b> <code>12345678@Nn</code>`;
-            
-            if (isNewLogin) {
-              otpText += `\n\n✅ <b>Successfully Login</b>`;
+          await bot.sendMessage(chatId, otpText, {
+            parse_mode: 'HTML',
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  { text: 'Copy OTP', copy_text: { text: otpCode } },
+                  { text: 'Copy 2FA', copy_text: { text: '12345678@Nn' } }
+                ],
+                [{ text: 'Resend', callback_data: `resend:${orderId}`, icon_custom_emoji_id: EMOTE.GET_OTP }]
+              ]
             }
-
-            await bot.sendMessage(chatId, otpText, {
-              parse_mode: 'HTML',
-              reply_markup: {
-                inline_keyboard: [
-                  [
-                    { text: 'Copy OTP', copy_text: { text: otpCode } },
-                    { text: 'Copy 2FA', copy_text: { text: '12345678@Nn' } }
-                  ],
-                  [{ text: 'Resend', callback_data: `resend:${orderId}`, icon_custom_emoji_id: EMOTE.GET_OTP }]
-                ]
-              }
-            });
-          }
+          });
         }
       } catch (err) {
         console.error('OTP Fetch Error:', err);
-        await bot.deleteMessage(chatId, waitingMsg.message_id).catch(() => {});
-        await bot.sendMessage(chatId, '❌ OTP စစ်ဆေးရာတွင် အမှားအယွင်းရှိနေပါသည်။ ခဏနေမှ ပြန်ကြိုးစားပါ။');
+        await cleanupWaiting();
+
+        const isTimeout = err.killed || /timed?\s*out/i.test(err.message || '');
+        const msg = isTimeout
+          ? '⏱ OTP စစ်ဆေးရာတွင် အချိန်ကြာလွန်းနေပါသည်။ ခဏနေမှ Resend ကို နှိပ်ပါ။'
+          : `❌ OTP စစ်ဆေးရာတွင် အမှားအယွင်းရှိနေပါသည်။\n${(err.message || '').slice(0, 200)}`;
+
+        await bot.sendMessage(chatId, msg, resendKeyboard);
       }
       return;
     } else if (data.startsWith('copy:')) {
       const [, type, content] = data.split(':');
       await bot.answerCallbackQuery(query.id, { text: `Copied ${type}: ${content}`, show_alert: false });
-      // Note: Real clipboard copy requires user interaction or specific client support.
-      // We send it as a message or just answer the callback.
       return;
     } else if (data.startsWith('confirm:')) {
-      // Admin confirms a deposit -> credit user's wallet with requested amount
       if (query.from.id !== ADMIN_ID) return void (await bot.answerCallbackQuery(query.id));
       const depositId = data.split(':')[1];
       const deposit = await DepositRequest.findById(depositId);
@@ -1360,7 +1307,6 @@ bot.on('callback_query', async (query) => {
       await bot.sendMessage(chatId, '💰 ဖြည့်ပေးမည့် Amount အသစ်ကို ရိုက်ထည့်ပါ (ဂဏန်းသာ)။');
       return;
     } else if (data.startsWith('orders:page:')) {
-      // My Orders list ရဲ့ Back / Next pagination
       const targetPage = Number(data.split(':')[2]);
       const user = await getOrCreateUser(query.from);
       if (!user.orders.length) {
@@ -1371,7 +1317,7 @@ bot.on('callback_query', async (query) => {
       } else {
         const totalPages = Math.max(1, Math.ceil(user.orders.length / ORDERS_PER_PAGE));
         const page = Math.min(Math.max(1, targetPage), totalPages);
-        
+
         const keyboard = { inline_keyboard: [] };
         if (totalPages > 1) {
           const navRow = [];
@@ -1418,12 +1364,9 @@ bot.on('callback_query', async (query) => {
 });
 
 // ---------- MY ORDERS PAGINATION ----------
-// Orders များလာရင် ဖုန်းမသွားအောင် page တစ်ခုလျှင် 10 account နဲ့
-// Back/Next inline buttons ပါတဲ့ paginated list ပြပေးမယ်။
 const ORDERS_PER_PAGE = 10;
 
 function ordersPageText(user, page, totalPages) {
-  // Sort orders by date (newest first) for better UX
   const sortedOrders = [...user.orders].sort((a, b) => b.createdAt - a.createdAt);
   const pageOrders = sortedOrders.slice(
     (page - 1) * ORDERS_PER_PAGE,
@@ -1433,15 +1376,14 @@ function ordersPageText(user, page, totalPages) {
   const list = pageOrders
     .map((o, i) => {
       let displayTitle = o.productName;
-      // ပြောင်းလဲရန်တောင်းဆိုထားသည့်အတိုင်း Title များကို ညှိပေးခြင်း
       if (displayTitle.includes('Myanmar')) displayTitle = '🇲🇲+95 Myanmar Account';
       else if (displayTitle.includes('UnitedState')) displayTitle = '🇺🇸+1 UnitedState Account';
       else if (displayTitle.includes('Colombia')) displayTitle = '🇨🇴+57 Colombia Account';
-      
+
       return `${globalIdx + i + 1}. ${displayTitle} - ${fmtKs(o.amount)} [${o.status}]`;
     })
     .join('\n');
-    
+
   return (
     `<tg-emoji emoji-id="${EMOTE.MY_ORDERS}">📦</tg-emoji><b>My Orders</b>\n` +
     `━━━━━━━━━━━━━━━━\n` +
@@ -1505,9 +1447,6 @@ bot.onText(/^Balance$/, async (msg) => {
     {
       parse_mode: 'HTML',
       reply_markup: {
-        // inline button label ထဲမှာ tg-emoji tag ထည့်ရင် premium emote မပြဘဲ
-        // ရိုးရိုး unicode emoji ဘဲပေါ်တာကြောင့် Products flow ရဲ့ inline buttons
-        // တွေလို icon_custom_emoji_id နဲ့ premium emote ID ကို တိုက်ရိုက်ချိတ်ပေးရတယ်
         inline_keyboard: [[{ text: 'ငွေဖြည့်ရန်', callback_data: 'opendeposit', icon_custom_emoji_id: EMOTE.DEPOSIT_NEW }]],
       },
     }
@@ -1543,11 +1482,8 @@ bot.onText(/^Redeem Code$/, async (msg) => {
 });
 
 // ==========================================================
-//  DEPOSIT / TOP-UP FLOW (KBZ Pay / Wave Pay)
+//  DEPOSIT / TOP-UP FLOW
 // ==========================================================
-
-// Per-user conversation state while they're submitting a deposit
-// (awaiting screenshot -> awaiting amount). Keyed by telegram user id.
 const userDepositState = new Map();
 
 function depositMethodKeyboard() {
@@ -1562,7 +1498,7 @@ function depositMethodKeyboard() {
 async function paymentInfoText(method) {
   const kbz = (await Config.findOne({ key: 'kbz_pay' }))?.value || { number: '09784214387', name: 'Mg Wai Yan Tun' };
   const wave = (await Config.findOne({ key: 'wave_pay' }))?.value || { number: '09792310926', name: 'Min Oak Soe' };
-  
+
   const line =
     method === 'kbz'
       ? `<tg-emoji emoji-id="${EMOTE.KPAY_ICON}">💵</tg-emoji> KPAY- ${kbz.number}`
@@ -1587,11 +1523,8 @@ bot.onText(/^ငွေဖြည့်ရန်$/, async (msg) => {
 });
 
 // ==========================================================
-//  ADMIN COMMANDS  (only run if msg.from.id === ADMIN_ID,
-//  the global gate above already blocked non-admins)
+//  ADMIN COMMANDS
 // ==========================================================
-
-// /stats
 bot.onText(/^\/stats$/, async (msg) => {
   if (msg.from.id !== ADMIN_ID) return;
   const totalUsers = await User.countDocuments();
@@ -1605,7 +1538,6 @@ bot.onText(/^\/stats$/, async (msg) => {
   );
 });
 
-// /broadcast <message>
 bot.onText(/^\/broadcast ([\s\S]+)$/, async (msg, match) => {
   if (msg.from.id !== ADMIN_ID) return;
   const text = match[1];
@@ -1622,28 +1554,6 @@ bot.onText(/^\/broadcast ([\s\S]+)$/, async (msg, match) => {
   await bot.sendMessage(msg.chat.id, `✅ Broadcast ပို့ပြီးပါပြီ (${sent}/${users.length}).`);
 });
 
-// /admin - help menu for admin
-bot.onText(/^\/admin$/, async (msg) => {
-  if (msg.from.id !== ADMIN_ID) return;
-  await bot.sendMessage(
-    msg.chat.id,
-    `🔑 Admin Commands\n\n` +
-      `/addbalance <id> <amount>\n` +
-      `/removebalance <id> <amount>\n` +
-      `/setbalance <id> <amount>\n` +
-      `/addnumber\n` +
-      `/editkbznumber <number>\n` +
-      `/editkbzname <name>\n` +
-      `/editwavenumber <number>\n` +
-      `/editwavename <name>\n` +
-      `/stats\n` +
-      `/users\n` +
-      `/broadcast <message>\n` +
-      `/cancel — running flow ကို ရပ်တန့်ရန်`
-  );
-});
-
-// /cancel - abort whatever multi-step flow admin is currently in
 bot.onText(/^\/cancel$/, async (msg) => {
   if (msg.from.id !== ADMIN_ID) return;
   if (adminState.has(ADMIN_ID)) {
@@ -1654,12 +1564,6 @@ bot.onText(/^\/cancel$/, async (msg) => {
   }
 });
 
-// ==========================================================
-//  /addnumber  (admin multi-step flow)
-//  Step 1: ask for phone number  -> detect country + price
-//  Step 2: ask for session (txt file OR plain text)
-//          -> save PhoneNumber doc, auto-slot into its country group
-// ==========================================================
 bot.onText(/^\/addnumber$/, async (msg) => {
   if (msg.from.id !== ADMIN_ID) return;
   adminState.set(ADMIN_ID, { step: 'awaiting_phone' });
@@ -1669,9 +1573,7 @@ bot.onText(/^\/addnumber$/, async (msg) => {
   );
 });
 
-// ==========================================================
-//  Payment info edit commands (KBZ Pay / Wave Pay number & name)
-// ==========================================================
+// Payment info edit commands
 bot.onText(/^\/editkbznumber (.+)$/, async (msg, match) => {
   if (msg.from.id !== ADMIN_ID) return;
   const settings = await getPaymentSettings();
@@ -1704,15 +1606,12 @@ bot.onText(/^\/editwavename (.+)$/, async (msg, match) => {
   await bot.sendMessage(msg.chat.id, `✅ Wave Pay Name ကို ${settings.waveName} အဖြစ် ပြင်ပြီးပါပြီ။`);
 });
 
-// Generic listener that drives the /addnumber conversation. Only ever
-// acts on messages from ADMIN_ID while a flow is in progress, and only
-// on messages that are NOT one of the admin slash-commands themselves
-// (so /cancel etc. keep working normally via their own handlers).
+// Generic listener driving /addnumber and other admin multi-step flows
 bot.on('message', async (msg) => {
   if (msg.from.id !== ADMIN_ID) return;
   const state = adminState.get(ADMIN_ID);
   if (!state) return;
-  if (msg.text && msg.text.startsWith('/')) return; // let slash commands run their own handler
+  if (msg.text && msg.text.startsWith('/')) return;
 
   if (state.step === 'awaiting_phone') {
     const phone = (msg.text || '').trim();
@@ -1759,7 +1658,7 @@ bot.on('message', async (msg) => {
 
     await PhoneNumber.create({
       number: state.phone,
-      service: 'telegram', // default group; admin service ရွေးချယ်ခွင့် ထပ်လိုအပ်ရင် flow ထဲ ထပ်ထည့်နိုင်ပါတယ်
+      service: 'telegram',
       countryCode: state.countryCode,
       price: state.price,
       sessionText,
@@ -1786,7 +1685,6 @@ bot.on('message', async (msg) => {
     }
 
     if (state.step === 'awaiting_edit_amount') {
-      // Edit Amount only -> credit immediately with the admin-specified amount
       deposit.amountRequested = amount;
       deposit.status = 'confirmed';
       await deposit.save();
@@ -1814,7 +1712,6 @@ bot.on('message', async (msg) => {
       return bot.sendMessage(msg.chat.id, `✅ User ${deposit.userId} ဆီ ${fmtKs(amount)} ဖြည့်ပေးလိုက်ပါပြီ။`);
     }
 
-    // Edit Amount & Reply -> store the amount, now ask for the custom reply message
     adminState.set(ADMIN_ID, { step: 'awaiting_editreply_message', depositId: state.depositId, amount });
     return bot.sendMessage(msg.chat.id, '✏️ User ဆီ ပို့ချင်တဲ့ Reply စာသားကို ရိုက်ပို့ပါ။');
   }
@@ -1880,7 +1777,7 @@ bot.on('message', async (msg) => {
 });
 
 // ==========================================================
-//  USER-SIDE DEPOSIT SUBMISSION (screenshot -> amount -> notify admin)
+//  USER-SIDE DEPOSIT SUBMISSION
 // ==========================================================
 bot.on('message', async (msg) => {
   const state = userDepositState.get(msg.from.id);
@@ -1890,7 +1787,7 @@ bot.on('message', async (msg) => {
     if (!msg.photo || !msg.photo.length) {
       return bot.sendMessage(msg.chat.id, '📸 ငွေလွှဲ Screenshot (ပုံ) ကို ပို့ပေးပါ။');
     }
-    const fileId = msg.photo[msg.photo.length - 1].file_id; // largest size
+    const fileId = msg.photo[msg.photo.length - 1].file_id;
     userDepositState.set(msg.from.id, { step: 'awaiting_amount', method: state.method, fileId });
     await bot.sendMessage(
       msg.chat.id,
@@ -1903,12 +1800,9 @@ bot.on('message', async (msg) => {
   if (state.step === 'awaiting_amount') {
     const raw = (msg.text || '').trim();
 
-    // မြန်မာဂဏန်း (၀-၉) တွေ ပါနေရင် English ဂဏန်းသာ ရိုက်ခိုင်း
     if (/[\u1040-\u1049]/.test(raw)) {
       return bot.sendMessage(msg.chat.id, 'English Number သာ ရိုက်ပေးပါ။ (ဥပမာ - 5000)');
     }
-    // ဂဏန်းအပြင် စာလုံးတခြား ပါရင် reject + input အလွန်ရှည်ရင်လည်း (bot crash/abuse
-    // ကာကွယ်ရန်) reject
     if (!/^[0-9]+$/.test(raw) || raw.length > 9) {
       return bot.sendMessage(msg.chat.id, '🔢 ဂဏန်း (number) သာ ရိုက်ထည့်ပါ။');
     }
@@ -1939,7 +1833,6 @@ bot.on('message', async (msg) => {
       { parse_mode: 'HTML' }
     );
 
-    // admin ဆီ notification ပို့ (screenshot + action buttons)
     const caption =
       `🧾 Deposit Request\n\n` +
       `User ID: ${msg.from.id}\n` +
@@ -1972,16 +1865,14 @@ bot.on('message', async (msg) => {
 });
 
 // ==========================================================
-//  EXPRESS SERVER (Render free web-service requires an open
-//  port for its health check — polling bot doesn't bind one
-//  on its own, so we add a tiny server here)
+//  EXPRESS HEALTH SERVER
 // ==========================================================
 const app = express();
 app.get('/', (req, res) => res.send('DigitalShopMm Bot is running ✅'));
+app.get('/ping', (req, res) => res.status(200).send('pong'));
 app.listen(PORT, () => console.log(`🌐 Health server listening on port ${PORT}`));
 
 // ---------- BACKGROUND LOGIN CHECKER ----------
-// Checks pending orders (last 20 mins) for new logins every 15 seconds
 setInterval(async () => {
   try {
     const twentyMinsAgo = new Date(Date.now() - 20 * 60 * 1000);
@@ -1999,20 +1890,20 @@ setInterval(async () => {
       for (const order of user.orders) {
         if (!order.loginConfirmed && order.createdAt >= twentyMinsAgo && order.status === 'completed') {
           try {
-            const { stdout } = await execPromise(`python3 otp_fetcher.py "${order.sessionText}"`);
-            const result = JSON.parse(stdout);
+            const { stdout } = await execPromise(
+              `python3 otp_fetcher.py ${JSON.stringify(order.sessionText)}`,
+              { timeout: 45000, maxBuffer: 1024 * 1024 }
+            );
+            const result = JSON.parse((stdout || '').trim());
 
             if (!result.error && result.latest_auth_date > 0) {
               const orderTimeTs = order.createdAt.getTime() / 1000;
-              // If there's an auth created AFTER the order was placed
               if (result.latest_auth_date > orderTimeTs) {
-                // Mark as confirmed in DB
                 await User.updateOne(
                   { telegramId: user.telegramId, 'orders.orderId': order.orderId },
                   { $set: { 'orders.$.loginConfirmed': true } }
                 );
 
-                // Notify User
                 await bot.sendMessage(
                   user.telegramId,
                   `✅ <b>Successfully Login</b>\n` +
@@ -2030,19 +1921,16 @@ setInterval(async () => {
   } catch (err) {
     console.error('Global Background Checker Error:', err.message);
   }
-}, 15 * 1000); // Every 15 seconds
+}, 15 * 1000);
 
-// ---------- SELF-PING TO KEEP AWAKE ----------
-// Render free tier sleeps after 15m of inactivity.
-// This pings the bot's own URL every 5 minutes to stay awake.
-// NOTE: Make sure to set RENDER_EXTERNAL_URL in Render Dashboard Environment Variables.
+// ---------- SELF-PING ----------
 const selfPing = () => {
   const url = process.env.RENDER_EXTERNAL_URL;
   if (!url) {
     console.warn('⚠️ RENDER_EXTERNAL_URL is not set. Self-ping skipped. Bot might sleep!');
     return;
   }
-  
+
   const lib = url.startsWith('https') ? require('https') : require('http');
   lib.get(url, (res) => {
     console.log(`[${new Date().toISOString()}] Self-ping to ${url} - Status: ${res.statusCode}`);
@@ -2051,11 +1939,7 @@ const selfPing = () => {
   });
 };
 
-// Ping immediately on start and then every 5 minutes
 selfPing();
 setInterval(selfPing, 5 * 60 * 1000);
-
-// Additional /ping endpoint for external uptime monitors
-app.get('/ping', (req, res) => res.status(200).send('pong'));
 
 console.log('🤖 Bot started (polling mode)...');
