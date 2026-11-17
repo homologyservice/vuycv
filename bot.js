@@ -249,6 +249,10 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+// Per-user OTP cooldown to avoid hammering Telegram and tripping rate limits
+const otpCooldown = new Map(); // userId -> last request timestamp
+const OTP_COOLDOWN_MS = 20000; // 20 seconds between Get OTP taps
+
 async function processCommentOrder(orderId) {
   const order = await CommentOrder.findOne({ orderId });
   if (!order) return;
@@ -1139,11 +1143,23 @@ bot.on('callback_query', async (query) => {
         return bot.answerCallbackQuery(query.id, { text: '❌ Order မတွေ့ပါ။', show_alert: true });
       }
 
+      // Cooldown check — prevents hammering Telegram and triggering rate limits
+      const lastOtpTime = otpCooldown.get(query.from.id) || 0;
+      const now = Date.now();
+      if (now - lastOtpTime < OTP_COOLDOWN_MS) {
+        const remaining = Math.ceil((OTP_COOLDOWN_MS - (now - lastOtpTime)) / 1000);
+        return bot.answerCallbackQuery(query.id, {
+          text: `⏳ ခဏစောင့်ပါ... ${remaining} စက္ကန့်အကြာမှ ထပ်နိုင်ပါမယ်။`,
+          show_alert: true,
+        });
+      }
+      otpCooldown.set(query.from.id, now);
+
       // Answer callback immediately so the button spinner stops
       await bot.answerCallbackQuery(query.id);
 
       const waitingMsg = await bot
-        .sendMessage(chatId, 'OTP ပို့နေပါတယ် 1-20 seconds စောင့်ပေးပါ.....')
+        .sendMessage(chatId, '⏳ Telegram မှ OTP ရယူနေပါတယ်... 20-60 seconds စောင့်ပေးပါ။')
         .catch(() => null);
 
       const cleanupWaiting = async () => {
@@ -1161,10 +1177,11 @@ bot.on('callback_query', async (query) => {
       };
 
       try {
-        // Hard cap the python process so the UI can never hang forever
+        // Hard cap the python process so the UI can never hang forever.
+        // 90s > Python's own max (35 connect + 25 messages + 20 authz ≈ 80s).
         const { stdout, stderr } = await execPromise(
           `python3 otp_fetcher.py ${JSON.stringify(order.sessionText)}`,
-          { timeout: 45000, maxBuffer: 1024 * 1024 }
+          { timeout: 90000, maxBuffer: 1024 * 1024 }
         );
 
         await cleanupWaiting();
@@ -1892,7 +1909,7 @@ setInterval(async () => {
           try {
             const { stdout } = await execPromise(
               `python3 otp_fetcher.py ${JSON.stringify(order.sessionText)}`,
-              { timeout: 45000, maxBuffer: 1024 * 1024 }
+              { timeout: 90000, maxBuffer: 1024 * 1024 }
             );
             const result = JSON.parse((stdout || '').trim());
 
