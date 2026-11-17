@@ -84,22 +84,6 @@ const EMOTE = {
   POST_LINK_ICON: '6260487164082005216',
 };
 
-// ---------- RANDOM PREMIUM EMOTE POOL ----------
-const EMOTE_POOL = [
-  { id: '6115968287735026787', ch: '🥰' },
-  { id: '6257974552379270658', ch: '📱' },
-  { id: '6260487164082005216', ch: '📢' },
-];
-const randEmote = () => EMOTE_POOL[Math.floor(Math.random() * EMOTE_POOL.length)];
-const randIcon = () => randEmote().id;
-const randTg = () => { const e = randEmote(); return `<tg-emoji emoji-id="${e.id}">${e.ch}</tg-emoji>`; };
-
-if (process.env.EMOTE_MODE !== 'original') {
-  for (const key of Object.keys(EMOTE)) {
-    Object.defineProperty(EMOTE, key, { get: () => randIcon(), enumerable: true, configurable: true });
-  }
-}
-
 // ---- Products / Countries data ----
 const SERVICES = {
   telegram: { label: 'Buy Telegram Accounts', emoteId: EMOTE.SVC_TELEGRAM },
@@ -249,10 +233,6 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// Per-user OTP cooldown to avoid hammering Telegram and tripping rate limits
-const otpCooldown = new Map(); // userId -> last request timestamp
-const OTP_COOLDOWN_MS = 20000; // 20 seconds between Get OTP taps
-
 async function processCommentOrder(orderId) {
   const order = await CommentOrder.findOne({ orderId });
   if (!order) return;
@@ -400,8 +380,8 @@ function serviceSelectKeyboard() {
 function commentCategoryKeyboard() {
   return {
     inline_keyboard: [
-      [{ text: COMMENT_CATEGORIES.boy.label, callback_data: 'cmcat:boy', icon_custom_emoji_id: randIcon() }],
-      [{ text: COMMENT_CATEGORIES.girl.label, callback_data: 'cmcat:girl', icon_custom_emoji_id: randIcon() }],
+      [{ text: COMMENT_CATEGORIES.boy.label, callback_data: 'cmcat:boy' }],
+      [{ text: COMMENT_CATEGORIES.girl.label, callback_data: 'cmcat:girl' }],
     ],
   };
 }
@@ -551,22 +531,9 @@ bot.setChatMenuButton({ menu_button: { type: 'commands' } }).catch((err) =>
 
 const adminState = new Map();
 
-// ---------- ADMIN: PREMIUM EMOJI ID FINDER ----------
-bot.on('message', async (msg) => {
-  try {
-    if (!msg.from || msg.from.id !== ADMIN_ID) return;
-    const src = msg.text || msg.caption || '';
-    const ents = (msg.entities || msg.caption_entities || []).filter((e) => e.type === 'custom_emoji');
-    if (!ents.length) return;
-    const lines = ents.map((e) => {
-      const ch = src.substr(e.offset, e.length);
-      return `${ch}  <code>${e.custom_emoji_id}</code>\n<code>{ id: '${e.custom_emoji_id}', ch: '${ch}' },</code>`;
-    });
-    await bot.sendMessage(msg.chat.id, `🆔 <b>Premium Emoji IDs</b>\n\n${lines.join('\n\n')}`, { parse_mode: 'HTML' });
-  } catch (e) {
-    console.error('Emoji ID finder error:', e.message);
-  }
-});
+// ✅ Get OTP rate-limit cooldown
+const otpCooldown = new Map();
+const OTP_COOLDOWN_MS = 20000;
 
 // ---------- GLOBAL ADMIN GATE ----------
 bot.on('message', async (msg) => {
@@ -898,7 +865,7 @@ bot.onText(/^\/start$/, async (msg) => {
   const user = await getOrCreateUser(msg.from);
 
   const welcomeText =
-    `${randTg()}<b>DigitalShopMm မှ ကြိုဆိုပါတယ်</b>\n\n` +
+    `<tg-emoji emoji-id="${EMOTE.WELCOME}">🍬</tg-emoji><b>DigitalShopMm မှ ကြိုဆိုပါတယ်</b>\n\n` +
     `🛍Digital Products နှင့် Services များကို ငွေဖြည့်သွင်းပြီး လိုချင်သည့် ပစ္စည်းကို တိုက်ရိုက် လျှင်မြန်စွာဝယ်ယူနိုင်ပါသည်🛍\n\n` +
     `<tg-emoji emoji-id="${EMOTE.WALLET}">💳</tg-emoji>Wallet Balance: ${fmtKs(user.balance)}`;
 
@@ -913,7 +880,7 @@ bot.onText(/^\/menu$/, async (msg) => {
   const user = await getOrCreateUser(msg.from);
 
   const welcomeText =
-    `${randTg()}<b>DigitalShopMm မှ ကြိုဆိုပါတယ်</b>\n\n` +
+    `<tg-emoji emoji-id="${EMOTE.WELCOME}">🍬</tg-emoji><b>DigitalShopMm မှ ကြိုဆိုပါတယ်</b>\n\n` +
     `🛍Digital Products နှင့် Services များကို ငွေဖြည့်သွင်းပြီး လိုချင်သည့် ပစ္စည်းကို တိုက်ရိုက် လျှင်မြန်စွာဝယ်ယူနိုင်ပါသည်🛍\n\n` +
     `<tg-emoji emoji-id="${EMOTE.WALLET}">💳</tg-emoji>Wallet Balance: ${fmtKs(user.balance)}`;
 
@@ -1143,9 +1110,9 @@ bot.on('callback_query', async (query) => {
         return bot.answerCallbackQuery(query.id, { text: '❌ Order မတွေ့ပါ။', show_alert: true });
       }
 
-      // Cooldown check — prevents hammering Telegram and triggering rate limits
-      const lastOtpTime = otpCooldown.get(query.from.id) || 0;
+      // ✅ Cooldown check
       const now = Date.now();
+      const lastOtpTime = otpCooldown.get(query.from.id) || 0;
       if (now - lastOtpTime < OTP_COOLDOWN_MS) {
         const remaining = Math.ceil((OTP_COOLDOWN_MS - (now - lastOtpTime)) / 1000);
         return bot.answerCallbackQuery(query.id, {
@@ -1155,12 +1122,12 @@ bot.on('callback_query', async (query) => {
       }
       otpCooldown.set(query.from.id, now);
 
-      // Answer callback immediately so the button spinner stops
       await bot.answerCallbackQuery(query.id);
 
-      const waitingMsg = await bot
-        .sendMessage(chatId, '⏳ Telegram မှ OTP ရယူနေပါတယ်... 20-60 seconds စောင့်ပေးပါ။')
-        .catch(() => null);
+      const waitingMsg = await bot.sendMessage(
+        chatId,
+        'OTP ပို့နေပါတယ် 1-20 seconds စောင့်ပေးပါ.....'
+      ).catch(() => null);
 
       const cleanupWaiting = async () => {
         if (waitingMsg && waitingMsg.message_id) {
@@ -1177,18 +1144,18 @@ bot.on('callback_query', async (query) => {
       };
 
       try {
-        // Hard cap the python process so the UI can never hang forever.
-        // 90s > Python's own max (35 connect + 25 messages + 20 authz ≈ 80s).
-        const { stdout, stderr } = await execPromise(
-          `python3 otp_fetcher.py ${JSON.stringify(order.sessionText)}`,
-          { timeout: 90000, maxBuffer: 1024 * 1024 }
-        );
+        const orderTimeTs = Math.floor(order.createdAt.getTime() / 1000);
 
-        await cleanupWaiting();
+        const { stdout, stderr } = await execPromise(
+          `python3 otp_fetcher.py ${JSON.stringify(order.sessionText)} ${orderTimeTs}`,
+          { timeout: 150000, maxBuffer: 1024 * 1024 }
+        );
 
         if (stderr && stderr.trim()) {
           console.error('otp_fetcher stderr:', stderr.trim());
         }
+
+        await cleanupWaiting();
 
         let result;
         try {
@@ -1211,9 +1178,9 @@ bot.on('callback_query', async (query) => {
           return;
         }
 
-        const orderTimeTs = order.createdAt.getTime() / 1000;
+        const orderTimeTs2 = order.createdAt.getTime() / 1000;
         let isNewLogin = false;
-        if (result.latest_auth_date > orderTimeTs) {
+        if (result.latest_auth_date > orderTimeTs2) {
           isNewLogin = true;
           if (!order.loginConfirmed) {
             await User.updateOne(
@@ -1223,7 +1190,7 @@ bot.on('callback_query', async (query) => {
           }
         }
 
-        if (!result.otp) {
+        if (!result.otp || !result.otp.code) {
           let msg = `OTP မရရှိသေးပါ။ Telegram တွင် OTP ပို့ထားခြင်း ရှိမရှိ စစ်ဆေးပြီး Resend ကို နှိပ်ပါ။`;
           if (isNewLogin) msg += `\n\n✅ <b>Successfully Login</b>`;
 
@@ -1232,8 +1199,7 @@ bot.on('callback_query', async (query) => {
             ...resendKeyboard,
           });
         } else {
-          const otpMatch = result.otp.text.match(/\d{5,6}/);
-          const otpCode = otpMatch ? otpMatch[0] : result.otp.text;
+          const otpCode = result.otp.code;
 
           let otpText = `💰 <b>OTP Code:</b> <code>${otpCode}</code>\n` +
                         `🔒 <b>2step password:</b> <code>12345678@Nn</code>`;
@@ -1506,8 +1472,8 @@ const userDepositState = new Map();
 function depositMethodKeyboard() {
   return {
     inline_keyboard: [
-      [{ text: 'KBZ Pay ဖြင့်ငွေသွင်းမည်', callback_data: 'deposit:kbz', icon_custom_emoji_id: EMOTE.KPAY_ICON }],
-      [{ text: 'Wave Pay ဖြင့်ငွေသွင်းမည်', callback_data: 'deposit:wave', icon_custom_emoji_id: EMOTE.WAVE_ICON }],
+      [{ text: 'KBZ Pay ဖြင့်ငွေသွင်းမည်', callback_data: 'deposit:kbz' }],
+      [{ text: 'Wave Pay ဖြင့်ငွေသွင်းမည်', callback_data: 'deposit:wave' }],
     ],
   };
 }
@@ -1528,7 +1494,7 @@ async function paymentInfoText(method) {
           `<tg-emoji emoji-id="${EMOTE.WELCOME}">🍬</tg-emoji>name - ${name}\n\n` +
           `ဆီသို့ ငွေလွဲပြီး screenshot ပို့ပေးပါ<tg-emoji emoji-id="${EMOTE.PARTY}">🤩</tg-emoji>`,
     reply_markup: {
-      inline_keyboard: [[{ text: 'Cancel', callback_data: 'canceldeposit', icon_custom_emoji_id: randIcon() }]]
+      inline_keyboard: [[{ text: '❌Cancel❌', callback_data: 'canceldeposit' }]]
     }
   };
 }
@@ -1564,9 +1530,7 @@ bot.onText(/^\/broadcast ([\s\S]+)$/, async (msg, match) => {
     try {
       await bot.sendMessage(u.telegramId, text);
       sent++;
-    } catch (e) {
-      /* user blocked bot etc - skip */
-    }
+    } catch (e) {}
   }
   await bot.sendMessage(msg.chat.id, `✅ Broadcast ပို့ပြီးပါပြီ (${sent}/${users.length}).`);
 });
@@ -1590,7 +1554,6 @@ bot.onText(/^\/addnumber$/, async (msg) => {
   );
 });
 
-// Payment info edit commands
 bot.onText(/^\/editkbznumber (.+)$/, async (msg, match) => {
   if (msg.from.id !== ADMIN_ID) return;
   const settings = await getPaymentSettings();
@@ -1862,12 +1825,12 @@ bot.on('message', async (msg) => {
         reply_markup: {
           inline_keyboard: [
             [
-              { text: '✅ Confirm', callback_data: `confirm:${deposit._id}`, icon_custom_emoji_id: randIcon() },
-              { text: '✏️ Edit Amount', callback_data: `editamt:${deposit._id}`, icon_custom_emoji_id: randIcon() },
+              { text: '✅ Confirm', callback_data: `confirm:${deposit._id}` },
+              { text: '✏️ Edit Amount', callback_data: `editamt:${deposit._id}` },
             ],
             [
-              { text: '❌ Cancel & Reply', callback_data: `cancelreply:${deposit._id}`, icon_custom_emoji_id: randIcon() },
-              { text: '✏️ Edit Amount & Reply', callback_data: `editamtreply:${deposit._id}`, icon_custom_emoji_id: randIcon() },
+              { text: '❌ Cancel & Reply', callback_data: `cancelreply:${deposit._id}` },
+              { text: '✏️ Edit Amount & Reply', callback_data: `editamtreply:${deposit._id}` },
             ],
           ],
         },
@@ -1907,14 +1870,14 @@ setInterval(async () => {
       for (const order of user.orders) {
         if (!order.loginConfirmed && order.createdAt >= twentyMinsAgo && order.status === 'completed') {
           try {
+            const orderTimeTs = Math.floor(order.createdAt.getTime() / 1000);
             const { stdout } = await execPromise(
-              `python3 otp_fetcher.py ${JSON.stringify(order.sessionText)}`,
-              { timeout: 90000, maxBuffer: 1024 * 1024 }
+              `python3 otp_fetcher.py ${JSON.stringify(order.sessionText)} ${orderTimeTs}`,
+              { timeout: 150000, maxBuffer: 1024 * 1024 }
             );
             const result = JSON.parse((stdout || '').trim());
 
             if (!result.error && result.latest_auth_date > 0) {
-              const orderTimeTs = order.createdAt.getTime() / 1000;
               if (result.latest_auth_date > orderTimeTs) {
                 await User.updateOne(
                   { telegramId: user.telegramId, 'orders.orderId': order.orderId },
