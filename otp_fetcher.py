@@ -5,42 +5,64 @@ import re
 from datetime import datetime, timezone
 from telethon import TelegramClient, functions
 from telethon.sessions import StringSession
+from telethon.errors import AuthKeyUnregisteredError, SessionRevokedError
 
 API_ID = 17349
 API_HASH = '344583e45741c457fe1862106095a5eb'
 
-# Hard caps so a stuck Telegram connection can never hang the Node parent
-CONNECT_TIMEOUT = 15
-AUTH_CHECK_TIMEOUT = 10
-MESSAGES_TIMEOUT = 15
-AUTHZ_TIMEOUT = 15
+# Longer timeouts — Render free-tier network can be slow reaching Telegram DCs
+CONNECT_TIMEOUT = 35
+MESSAGES_TIMEOUT = 25
+AUTHZ_TIMEOUT = 20
+IS_AUTH_TIMEOUT = 15
 
 
 async def fetch_otp_and_check_login(session_str):
-    client = None  # defined before try so `finally` can never NameError
+    client = None
     try:
+        # NOTE: do NOT wrap client.connect() in asyncio.wait_for — Telethon's
+        # own retry logic would be cancelled as soon as the outer timeout fires.
         client = TelegramClient(
             StringSession(session_str),
             API_ID,
             API_HASH,
-            connection_retries=2,
-            timeout=10,
+            connection_retries=5,
+            retry_delay=2,
+            auto_reconnect=True,
+            timeout=20,
+            request_retries=5,
         )
-        await asyncio.wait_for(client.connect(), timeout=CONNECT_TIMEOUT)
 
-        authorized = await asyncio.wait_for(
-            client.is_user_authorized(), timeout=AUTH_CHECK_TIMEOUT
-        )
+        await client.connect()
+
+        if not client.is_connected():
+            return {"error": "Failed to connect to Telegram servers. Please try Resend."}
+
+        # Guard: session may be revoked / logged out
+        try:
+            authorized = await asyncio.wait_for(
+                client.is_user_authorized(), timeout=IS_AUTH_TIMEOUT
+            )
+        except asyncio.TimeoutError:
+            return {"error": "Auth check timed out. Please try Resend."}
+        except (AuthKeyUnregisteredError, SessionRevokedError):
+            return {"error": "Session is invalid or revoked"}
+        except Exception as e:
+            return {"error": f"Auth check failed: {type(e).__name__}: {e}"}
+
         if not authorized:
             return {"error": "Session is invalid or expired"}
 
         # 1. Fetch latest OTP message from 777000 (Telegram service account)
-        target_id = 777000
-        messages = await asyncio.wait_for(
-            client.get_messages(target_id, limit=5), timeout=MESSAGES_TIMEOUT
-        )
-
         otp_data = None
+        target_id = 777000
+        try:
+            messages = await asyncio.wait_for(
+                client.get_messages(target_id, limit=10), timeout=MESSAGES_TIMEOUT
+            )
+        except asyncio.TimeoutError:
+            messages = []
+
         if messages:
             for msg in messages:
                 text = msg.text or ''
@@ -66,7 +88,6 @@ async def fetch_otp_and_check_login(session_str):
                     if auth_ts > latest_auth_date:
                         latest_auth_date = auth_ts
         except Exception:
-            # Not fatal — we still return OTP info even if this call fails
             pass
 
         return {
@@ -75,7 +96,7 @@ async def fetch_otp_and_check_login(session_str):
             "session_count": session_count,
         }
     except asyncio.TimeoutError:
-        return {"error": "Telegram server did not respond in time (timeout)"}
+        return {"error": "Connection timed out. Please try Resend."}
     except Exception as e:
         return {"error": f"{type(e).__name__}: {e}"}
     finally:
@@ -97,5 +118,4 @@ if __name__ == "__main__":
     except Exception as e:
         result = {"error": f"Fatal: {type(e).__name__}: {e}"}
 
-    # Always emit valid JSON on stdout so the Node side never breaks on parse
     print(json.dumps(result))
