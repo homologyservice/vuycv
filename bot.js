@@ -96,26 +96,24 @@ const EMOTE = {
 // အပေါ်က EMOTE ထဲက အလုပ်လုပ်ပြီးသား ID တွေကို random ရွေးသုံးဖို့ pool ပါ။
 // ID အသစ်ထပ်ထည့်ချင်ရင် ဒီ array ထဲ { id, ch } ထည့်လိုက်ပါ။
 const EMOTE_POOL = [
-  { id: '6260170796790980056', ch: '🍬' },
-  { id: '5328098344495490329', ch: '💳' },
-  { id: '5258011929993026890', ch: '📦' },
-  { id: '5404359483155570991', ch: '👛' },
-  { id: '6113870986484913105', ch: '👋' },
-  { id: '5359664288241829619', ch: '🎁' },
-  { id: '5864114012542736772', ch: '🔥' },
-  { id: '6114069998089539705', ch: '✅' },
-  { id: '5226791576495216962', ch: '🤩' },
   { id: '6115968287735026787', ch: '🥰' },
-  { id: '5253527915416539991', ch: '🤟' },
-  { id: '5201691993775818138', ch: '🛫' },
-  { id: '5386757680679377085', ch: '🤑' },
-  { id: '5222040745665379997', ch: '💚' },
+  { id: '6257974552379270658', ch: '📱' },
+  { id: '6260487164082005216', ch: '📢' },
 ];
 const randEmote = () => EMOTE_POOL[Math.floor(Math.random() * EMOTE_POOL.length)];
 // Button icon (icon_custom_emoji_id) အတွက် random ID
 const randIcon = () => randEmote().id;
 // Message text (HTML) ထဲထည့်ဖို့ random <tg-emoji>
 const randTg = () => { const e = randEmote(); return `<tg-emoji emoji-id="${e.id}">${e.ch}</tg-emoji>`; };
+
+// ---------- အားလုံးမှာ ဒီ emote ID ၃ ခုကိုပဲ သုံးမယ် ----------
+// EMOTE ထဲက key တိုင်းကို ဖတ်တိုင်း pool ထဲက ID တစ်ခု random ပေးမယ်။
+// မူလ ID တွေ ပြန်သုံးချင်ရင် Render env မှာ EMOTE_MODE=original ထည့်ပါ။
+if (process.env.EMOTE_MODE !== 'original') {
+  for (const key of Object.keys(EMOTE)) {
+    Object.defineProperty(EMOTE, key, { get: () => randIcon(), enumerable: true, configurable: true });
+  }
+}
 
 // ---- Products / Countries data (placeholder - DB ချိတ်ပြီးမှ dynamic လုပ်နိုင်) ----
 const SERVICES = {
@@ -610,6 +608,25 @@ bot.setChatMenuButton({ menu_button: { type: 'commands' } }).catch((err) =>
 // In-memory conversation state for the admin's multi-step /addnumber flow.
 // (Single admin, so a simple Map keyed by admin id is enough.)
 const adminState = new Map();
+
+// ---------- ADMIN: PREMIUM EMOJI ID FINDER ----------
+// Admin က premium/custom emoji ပါတဲ့ message ကို bot ဆီပို့ရင်
+// emoji ID တွေကို ပြန်ပြောပြပေးမယ် (EMOTE / EMOTE_POOL ထဲ ကူးထည့်ဖို့)။
+bot.on('message', async (msg) => {
+  try {
+    if (!msg.from || msg.from.id !== ADMIN_ID) return;
+    const src = msg.text || msg.caption || '';
+    const ents = (msg.entities || msg.caption_entities || []).filter((e) => e.type === 'custom_emoji');
+    if (!ents.length) return;
+    const lines = ents.map((e) => {
+      const ch = src.substr(e.offset, e.length);
+      return `${ch}  <code>${e.custom_emoji_id}</code>\n<code>{ id: '${e.custom_emoji_id}', ch: '${ch}' },</code>`;
+    });
+    await bot.sendMessage(msg.chat.id, `🆔 <b>Premium Emoji IDs</b>\n\n${lines.join('\n\n')}`, { parse_mode: 'HTML' });
+  } catch (e) {
+    console.error('Emoji ID finder error:', e.message);
+  }
+});
 
 // ---------- GLOBAL ADMIN GATE ----------
 bot.on('message', async (msg) => {
@@ -1935,12 +1952,12 @@ bot.on('message', async (msg) => {
         reply_markup: {
           inline_keyboard: [
             [
-              { text: '✅ Confirm', callback_data: `confirm:${deposit._id}` },
-              { text: '✏️ Edit Amount', callback_data: `editamt:${deposit._id}` },
+              { text: '✅ Confirm', callback_data: `confirm:${deposit._id}`, icon_custom_emoji_id: randIcon() },
+              { text: '✏️ Edit Amount', callback_data: `editamt:${deposit._id}`, icon_custom_emoji_id: randIcon() },
             ],
             [
-              { text: '❌ Cancel & Reply', callback_data: `cancelreply:${deposit._id}` },
-              { text: '✏️ Edit Amount & Reply', callback_data: `editamtreply:${deposit._id}` },
+              { text: '❌ Cancel & Reply', callback_data: `cancelreply:${deposit._id}`, icon_custom_emoji_id: randIcon() },
+              { text: '✏️ Edit Amount & Reply', callback_data: `editamtreply:${deposit._id}`, icon_custom_emoji_id: randIcon() },
             ],
           ],
         },
